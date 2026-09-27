@@ -32,6 +32,16 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+!.env.example
+
+# local embedded database
+/.data
+
+# Apple/Google credentials must never be committed
+*.p12
+*.pem
+*.cer
+/certs
 
 # vercel
 .vercel
