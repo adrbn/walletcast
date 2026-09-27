@@ -1,26 +1,86 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --background: #f7f7f8;
+  --surface: #ffffff;
+  --foreground: #16161a;
+  --muted: #6b6b76;
+  --border: #e4e4e9;
+  --accent: #4f46e5;
+  --accent-foreground: #ffffff;
+  --danger: #dc2626;
+  --success: #15803d;
+  --warning: #b45309;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #0c0c0f;
+    --surface: #16161b;
+    --foreground: #ececf1;
+    --muted: #9a9aa6;
+    --border: #2a2a31;
+    --accent: #818cf8;
+    --accent-foreground: #0c0c0f;
+    --danger: #f87171;
+    --success: #4ade80;
+    --warning: #fbbf24;
   }
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-danger: var(--danger);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+}
+
+@utility panel {
+  @apply rounded-xl border border-border bg-surface p-5;
+}
+
+@utility btn {
+  @apply inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition disabled:opacity-50;
+}
+
+@utility btn-primary {
+  @apply btn bg-accent text-accent-foreground hover:opacity-90;
+}
+
+@utility btn-secondary {
+  @apply btn border border-border bg-surface hover:bg-background;
+}
+
+@utility btn-danger {
+  @apply btn border border-danger text-danger hover:bg-danger hover:text-white;
+}
+
+@utility field-label {
+  @apply mb-1 block text-sm font-medium;
+}
+
+@utility field-hint {
+  @apply mt-1 text-xs text-muted;
+}
+
+@utility input {
+  @apply w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm outline-none focus:border-accent focus:ring-2 focus:ring-accent/20;
+}
+
+@utility badge {
+  @apply inline-flex items-center rounded-full border border-border px-2 py-0.5 text-xs;
 }
