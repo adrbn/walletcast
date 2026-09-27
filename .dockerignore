@@ -1,0 +1,10 @@
+node_modules
+.next
+.data
+.git
+coverage
+.env*
+!.env.example
+*.pem
+*.p12
+certs

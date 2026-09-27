@@ -1,0 +1,33 @@
+# Production-like stack: WalletCast + Postgres.
+#   cp .env.example .env   # fill BASE_URL, ADMIN_PASSWORD, SESSION_SECRET, Apple/Google
+#   docker compose up -d
+# Put a TLS reverse proxy (Caddy, Traefik, nginx) in front: Apple requires HTTPS.
+services:
+  app:
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      DATABASE_URL: postgres://walletcast:walletcast@db:5432/walletcast
+    ports:
+      - "3000:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: walletcast
+      POSTGRES_PASSWORD: walletcast
+      POSTGRES_DB: walletcast
+    volumes:
+      - db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U walletcast"]
+      interval: 5s
+      retries: 10
+
+volumes:
+  db:
