@@ -18,11 +18,9 @@ v1 is complete and smoke-tested end to end locally:
 - login, card creation, public page, `.pkpass` issuance, the full Apple web-service loop, and broadcast with stats;
 - 62 tests pass, with about 85% line coverage on `src/lib`.
 
-**Not yet validated with real credentials:**
-- no real iPhone or Apple certificate was used; the Apple tests use self-signed certs and a local HTTP/2 server;
-- no real Google issuer was used; the Google tests fake `fetch`.
+**Apple validated on a real iPhone (2026-09-28):** real Pass Type ID cert, ngrok tunnel. Pass added, device registered, broadcast pushed via APNs (1/1), device fetched the updated pass, lock-screen notification shown.
 
-The first real-world test is the next milestone.
+**Not yet validated:** a real Google issuer (the Google tests fake `fetch`).
 
 ## Commands
 
@@ -90,11 +88,12 @@ src/proxy.ts        optimistic auth gate for /dashboard (Next 16 name for middle
 - **Design edits must bump `subscribers.updatedAt`** (`cards.update` does this in a transaction). Otherwise Apple's `passesUpdatedSince` query reports nothing changed.
 - **`clientIp`** uses the right-most `X-Forwarded-For` entry; the left-most entries are spoofable.
 - **Standalone output**: the Docker image must copy `src/lib/db/migrations`, since migrations are read from `process.cwd()`. `next.config.ts` also traces them for Vercel.
+- **Real-iPhone testing via tunnel**: use ngrok (the Cloudflare quick tunnel needs port 7844, often blocked). `allowedDevOrigins` in `next.config.ts` lets the tunnel load dev assets; otherwise the page renders without CSS/JS. The tunnel URL changes on restart, so installed passes stop updating: use a deployed instance for anything lasting.
 - **Apple requires HTTPS** for the web service; `http://` works only for downloading the pass.
 - **Smoke-testing locally**: generate throwaway Apple certs with `createSelfSignedCert()` from `src/lib/testing/certs.ts` and set the `APPLE_*` env vars to their base64. The pass downloads and the web service works; APNs rejects the fake cert, which is expected.
 
 ## Next steps
 
-1. Test with real Apple credentials on an iPhone (via a tunnel or a deployed HTTPS instance) and with a real Google issuer in demo mode.
+1. Test with a real Google issuer in demo mode.
 2. Deploy a public demo instance.
 3. Build the v2 items in `docs/ROADMAP.md`, starting with scheduled notifications and geo (Apple `locations`).
