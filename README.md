@@ -31,6 +31,11 @@ You don't need an app, an App Store listing or customer accounts. Wallet-marketi
 
 <br/>
 
+https://github.com/user-attachments/assets/5634ff05-0c70-43c5-a07f-99d5e0682a18
+
+<br/>
+
+
 ## How it works
 
 <picture>
