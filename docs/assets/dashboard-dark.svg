@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 680" width="1200" height="680" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">
+<rect width="1200" height="680" rx="16" fill="#0D1117" stroke="#2C2C2E"/>
+<path d="M0 16 a16 16 0 0 1 16 -16 h1168 a16 16 0 0 1 16 16 v28 h-1200 z" fill="#161618"/>
+<circle cx="24" cy="22" r="6" fill="#FF5F57"/><circle cx="44" cy="22" r="6" fill="#FEBC2E"/><circle cx="64" cy="22" r="6" fill="#28C840"/>
+<rect x="440" y="10" width="320" height="24" rx="8" fill="#0D1117"/>
+<text x="600" y="27" font-size="12" fill="#98989D" text-anchor="middle">walletcast.yourdomain.com</text>
+<text x="40" y="84" font-size="15" font-weight="700" fill="#F5F5F7">WalletCast</text>
+<text x="140" y="84" font-size="14" fill="#98989D">Cards</text>
+<text x="196" y="84" font-size="14" fill="#98989D">Settings</text>
+<line x1="0" y1="104" x2="1200" y2="104" stroke="#2C2C2E"/>
+<text x="40" y="146" font-size="13" fill="#98989D">Lu's Café</text>
+<text x="40" y="176" font-size="26" font-weight="700" fill="#F5F5F7" letter-spacing="-0.5">Coffee Club</text>
+<rect x="1020" y="150" width="140" height="36" rx="10" fill="#0D1117" stroke="#2C2C2E"/>
+<text x="1090" y="173" font-size="13" font-weight="500" fill="#F5F5F7" text-anchor="middle">Open public page ↗</text>
+<rect x="40" y="206" width="700" height="290" rx="18" fill="#1C1C1E"/>
+<text x="68" y="244" font-size="17" font-weight="700" fill="#F5F5F7">Send a notification</text>
+<text x="68" y="266" font-size="13" fill="#98989D">Appears on the lock screen of everyone who has the card.</text>
+<rect x="68" y="284" width="644" height="40" rx="10" fill="#2C2C2E" stroke="#2C2C2E"/>
+<text x="84" y="309" font-size="14" fill="#F5F5F7">Flash sale</text>
+<rect x="68" y="336" width="644" height="84" rx="10" fill="#2C2C2E" stroke="#2C2C2E"/>
+<text x="84" y="362" font-size="14" fill="#F5F5F7">2 croissants for 1 until noon. Show this card at the counter.</text>
+<text x="68" y="464" font-size="12" fill="#98989D">61/300</text>
+<rect x="580" y="440" width="132" height="38" rx="10" fill="#818CF8"/>
+<text x="646" y="464" font-size="14" font-weight="600" fill="#FFFFFF" text-anchor="middle">Send to 1,284</text>
+<rect x="764" y="206" width="396" height="170" rx="18" fill="#1C1C1E"/>
+<text x="792" y="244" font-size="13" font-weight="600" fill="#98989D" letter-spacing="0.4">SUBSCRIBERS</text>
+<text x="792" y="300" font-size="48" font-weight="700" fill="#F5F5F7" letter-spacing="-1.5">1,284</text>
+<rect x="792" y="322" width="340" height="8" rx="4" fill="#3A3A3C"/>
+<rect x="792" y="322" width="242" height="8" rx="4" fill="#818CF8"/>
+<text x="792" y="354" font-size="13" fill="#98989D">912 Apple Wallet · 372 Google Wallet</text>
+<rect x="764" y="392" width="396" height="248" rx="18" fill="#1C1C1E"/>
+<text x="792" y="430" font-size="13" font-weight="600" fill="#98989D" letter-spacing="0.4">HISTORY</text>
+<text x="792" y="462" font-size="14" font-weight="600" fill="#F5F5F7">Happy hour starts now</text>
+<text x="1132" y="462" font-size="12" fill="#98989D" text-anchor="end">Today, 5:02 PM</text>
+<text x="792" y="482" font-size="12" fill="#98989D">Apple 912/912 · Google 372/372</text>
+<line x1="792" y1="498" x2="1132" y2="498" stroke="#2C2C2E"/>
+<text x="792" y="520" font-size="14" font-weight="600" fill="#F5F5F7">New autumn menu is here</text>
+<text x="1132" y="520" font-size="12" fill="#98989D" text-anchor="end">Mon, 9:15 AM</text>
+<text x="792" y="540" font-size="12" fill="#98989D">Apple 912/912 · Google 372/372</text>
+<line x1="792" y1="556" x2="1132" y2="556" stroke="#2C2C2E"/>
+<text x="792" y="578" font-size="14" font-weight="600" fill="#F5F5F7">Closed for the holiday</text>
+<text x="1132" y="578" font-size="12" fill="#98989D" text-anchor="end">Sep 30, 8:00 AM</text>
+<text x="792" y="598" font-size="12" fill="#98989D">Apple 912/912 · Google 372/372</text>
+<rect x="40" y="512" width="700" height="128" rx="18" fill="#1C1C1E"/>
+<rect x="68" y="532" width="260" height="88" rx="14" fill="#111827"/>
+<text x="86" y="558" font-size="12" font-weight="600" fill="#FFFFFF">Lu's Café</text>
+<text x="86" y="582" font-size="9" font-weight="600" fill="#9CA3AF" letter-spacing="0.8">LATEST</text>
+<text x="86" y="600" font-size="11.5" fill="#FFFFFF">Flash sale: 2 croissants for 1</text>
+<text x="356" y="566" font-size="15" font-weight="600" fill="#F5F5F7">Live preview</text>
+<text x="356" y="590" font-size="13" fill="#98989D">Colours, logo and texts update as you type.</text>
+</svg>

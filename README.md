@@ -1,101 +1,248 @@
-# WalletCast
+<div align="center">
 
-**Send lock-screen notifications to your customers without building an app.**
+<img src="docs/assets/banner.svg" alt="WalletCast: notifications without the app" width="100%">
 
-WalletCast is a free, open-source, self-hosted way to use Apple Wallet and Google Wallet as a notification channel. People scan a QR code, tap **Add to Apple Wallet** or **Add to Google Wallet**, and your card sits in their wallet. From then on, every message you send shows up on their lock screen like a push notification.
+<br/>
+<br/>
 
-- **No app** to build, publish or get people to install
-- **No account** for your customers: one tap, done
-- **No per-message fees** and no monthly SaaS subscription. It runs on your server.
-- **Your data**: subscribers, emails and history stay in your database
+<a href="https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fadrbn%2Fwalletcast&env=DATABASE_URL,BASE_URL,ADMIN_PASSWORD,SESSION_SECRET&envDescription=Postgres%20URL%2C%20your%20public%20URL%2C%20an%20admin%20password%20and%20a%20random%20session%20secret&envLink=https%3A%2F%2Fgithub.com%2Fadrbn%2Fwalletcast%2Fblob%2Fmain%2Fdocs%2Fdeploy.md&project-name=walletcast"><img src="https://img.shields.io/badge/▲_Deploy_to_Vercel-000000?style=for-the-badge" alt="Deploy to Vercel"></a>
+<a href="#run-it-with-docker"><img src="https://img.shields.io/badge/Run_with_Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white" alt="Run with Docker"></a>
+<a href="https://github.com/adrbn/walletcast/archive/refs/heads/main.zip"><img src="https://img.shields.io/badge/⬇_Download-Source_.zip-4F46E5?style=for-the-badge" alt="Download source"></a>
 
-Wallet-marketing SaaS products sell this for a monthly fee. WalletCast publishes the whole pipeline so anyone can run it.
+<br/>
+
+[![Apple Wallet](https://img.shields.io/badge/Apple_Wallet-supported-1d1d1f?logo=apple&logoColor=white)](docs/setup-apple.md)
+[![Google Wallet](https://img.shields.io/badge/Google_Wallet-supported-1a73e8?logo=googlepay&logoColor=white)](docs/setup-google.md)
+[![Self-hosted](https://img.shields.io/badge/self--hosted-your_data-4F46E5)](docs/deploy.md)
+[![License: AGPL-3.0](https://img.shields.io/badge/license-AGPL--3.0-6E6E73)](LICENSE)
+[![CI](https://github.com/adrbn/walletcast/actions/workflows/ci.yml/badge.svg)](https://github.com/adrbn/walletcast/actions/workflows/ci.yml)
+
+**[How it works](#how-it-works) · [Features](#everything-you-need) · [Get started](#get-started) · [FAQ](#faq) · [Support](#support-the-project)**
+
+</div>
+
+<br/>
+
+**WalletCast turns Apple Wallet and Google Wallet into your own push-notification channel.** Customers scan a QR code and add your card in one tap. From then on, every message you send lands on their lock screen, just like an app notification.
+
+You don't need an app, an App Store listing or customer accounts. Wallet-marketing platforms charge a monthly fee for this. WalletCast is free, open source, and runs on your own server.
+
+<br/>
 
 ## How it works
 
-```
- QR code / link ──► /c/your-card ──► "Add to Wallet"
-                                         │
-            ┌────────────────────────────┴───────────────────────────┐
-            ▼                                                        ▼
-   Apple Wallet (.pkpass signed                          Google Wallet ("Save" link,
-   with your Pass Type ID cert)                          JWT signed by your service account)
-            │ device registers with                                  │
-            │ WalletCast's web service                               │
-            ▼                                                        ▼
-   You send a message ─► WalletCast updates the card text ─► Apple: silent APNs push → device
-                                                               downloads the new pass → the
-                                                               changed field shows as a
-                                                               lock-screen notification
-                                                             ► Google: object PATCH + addMessage
-                                                               (TEXT_AND_NOTIFY) → notification
-```
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/how-it-works-dark.svg">
+  <img alt="Three steps: scan a QR code, add the card to Apple or Google Wallet, receive notifications on the lock screen" src="docs/assets/how-it-works-light.svg" width="100%">
+</picture>
 
-Both wallets only notify when a pass changes, so WalletCast keeps a **Latest** field on the card. Each broadcast updates it, and the wallet shows the change on the lock screen.
+<br/>
 
-## Features (v1)
+## Your whole channel on one screen
 
-- Card designer with live preview: colours, logo, icon, texts, website
-- Public add-to-wallet page with device detection and an optional email field
-- QR codes (PNG/SVG) with **placement tags** (`?src=window`, `?src=flyer`…) to see which QR works best
-- One-click broadcast to every Apple and Google wallet, with delivery stats and history
-- Full Apple PassKit web service (registration, updates, 304 caching, dead-token pruning)
-- Subscriber CSV export
-- Embedded database (zero setup) or any Postgres
-- Docker image, docker-compose, and Vercel support
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/dashboard-dark.svg">
+  <img alt="The WalletCast dashboard: a message composer, subscriber count split by Apple and Google Wallet, and a delivery history" src="docs/assets/dashboard-light.svg" width="100%">
+</picture>
 
-The [roadmap](docs/ROADMAP.md) covers scheduled and geo-targeted notifications, loyalty stamps, automations and multi-account.
+<div align="center"><sub>Write, send, and see how many wallets your message reached, all from one page.</sub></div>
 
-## Quick start (local)
+<br/>
 
-Requirements: Node 22+ and pnpm (`corepack enable`).
+## Everything you need
 
-```bash
-git clone https://github.com/adrbn/walletcast.git
-cd walletcast
-pnpm install
-cp .env.example .env.local   # set ADMIN_PASSWORD and SESSION_SECRET (openssl rand -base64 48)
-pnpm dev
-```
+<table>
+<tr>
+<td width="50%" valign="top">
 
-Open http://localhost:3000/dashboard and create your first card. The dashboard works without any wallet credentials; the Add-to-Wallet buttons appear as soon as you configure a platform:
+### 🔔 Lock-screen notifications
+Send a message and it appears on every customer's lock screen, on iPhone and Android.
 
-| Platform | Cost | Guide |
+</td>
+<td width="50%" valign="top">
+
+### 🎨 Your brand, live
+Choose colours, logo, icon and text, and watch the card update as you type.
+
+</td>
+</tr>
+<tr>
+<td valign="top">
+
+### 📱 One-tap add
+Your public page detects the phone and shows the right **Add to Wallet** button. Collecting an email is optional.
+
+</td>
+<td valign="top">
+
+### 🏷️ QR codes that tell you what works
+Download PNG or SVG codes tagged by placement (`window`, `flyer`, `receipt`…) and see which one brings the most people.
+
+</td>
+</tr>
+<tr>
+<td valign="top">
+
+### 📊 Delivery you can see
+Subscriber counts per wallet, full message history, and delivery stats for every send.
+
+</td>
+<td valign="top">
+
+### 🔒 Your data stays yours
+Subscribers and history live in your database, and you can export everything as CSV whenever you like. There is no tracking and no middleman.
+
+</td>
+</tr>
+<tr>
+<td valign="top">
+
+### 💸 No per-message fees
+Send as often as you like. Your only costs are hosting and Apple's developer fee.
+
+</td>
+<td valign="top">
+
+### ⚡ Zero-setup database
+An embedded database works out of the box. Connect Postgres when you grow.
+
+</td>
+</tr>
+</table>
+
+<br/>
+
+## Made for
+
+| | |
+|---|---|
+| ☕ **Cafés & restaurants** | Daily specials, happy hour, "we're open late tonight" |
+| 🛍️ **Shops** | Flash sales, new arrivals, restock alerts |
+| 🧘 **Studios & gyms** | Schedule changes, new classes, last spots left |
+| 🎟️ **Events & venues** | Doors open, line-up updates, last-minute changes |
+| 🚀 **Creators & founders** | A direct line to your community, without a newsletter or social feed |
+
+<br/>
+
+## Get started
+
+### What you need
+
+| | Cost | Setup |
 |---|---|---|
-| Apple Wallet | Apple Developer Program, 99 $/year | [docs/setup-apple.md](docs/setup-apple.md) |
-| Google Wallet | Free | [docs/setup-google.md](docs/setup-google.md) |
+| <img src="https://img.shields.io/badge/-Apple_Wallet-1d1d1f?logo=apple&logoColor=white" alt=""> | Apple Developer Program, $99/year | [10-minute guide →](docs/setup-apple.md) |
+| <img src="https://img.shields.io/badge/-Google_Wallet-1a73e8?logo=googlepay&logoColor=white" alt=""> | Free | [Step-by-step guide →](docs/setup-google.md) |
+| A server with HTTPS | Free tiers work (Vercel + Neon) | [Deploy guide →](docs/deploy.md) |
 
-Apple devices only talk to an **HTTPS** server, so real iPhones need a deployed instance (or a tunnel like `cloudflared` / `ngrok` during development).
+You can start with one wallet and add the other later. The dashboard works without either, so you can design your card first.
 
-## Deploy
+### Deploy in one click
 
-See [docs/deploy.md](docs/deploy.md) for Docker Compose (+ Caddy for HTTPS), Vercel + Neon, or any Node host.
+Click **Deploy to Vercel** at the top of this page, then add a free Postgres database from [Neon](https://neon.tech). Fill in four values when Vercel asks for them, and you're live.
 
-```bash
-cp .env.example .env && docker compose up -d
-```
-
-## Limits to know
-
-- **Google** shows at most about **3 notifications per pass per 24 hours**. Extra messages still update the card without a notification. New Google issuers start in demo mode, and you must [request publishing access](docs/setup-google.md#4-go-live) before the public can save passes.
-- **Apple** shows the notification when the text changes. Sending the exact same text twice produces no second notification.
-- People can turn off notifications for a pass, or delete it. Removed passes are detected and marked as removed.
-
-## Development
+### Run it with Docker
 
 ```bash
-pnpm dev             # dev server
-pnpm test            # unit + integration tests (PGlite in-memory, local TLS/HTTP2 fakes)
-pnpm test:coverage   # coverage report (src/lib, 80% threshold)
-pnpm typecheck       # next typegen + tsc
-pnpm lint
-pnpm db:generate     # new SQL migration after editing src/lib/db/schema.ts
+git clone https://github.com/adrbn/walletcast.git && cd walletcast
+cp .env.example .env        # set ADMIN_PASSWORD, SESSION_SECRET and BASE_URL
+docker compose up -d
 ```
 
-Architecture, conventions and gotchas: [CLAUDE.md](CLAUDE.md) and [docs/specs](docs/specs).
+Open `https://your-domain/dashboard`, sign in, and create your first card. [docs/deploy.md](docs/deploy.md) covers HTTPS with Caddy, backups and updates.
 
-## License
+### Try it locally
 
-[AGPL-3.0](LICENSE). You can use, modify and self-host it freely. If you offer a modified WalletCast as a hosted service, you must publish your changes under the same license.
+```bash
+pnpm install
+cp .env.example .env.local
+pnpm dev                    # http://localhost:3000/dashboard
+```
 
-*Apple Wallet is a trademark of Apple Inc. Google Wallet is a trademark of Google LLC. WalletCast is not affiliated with either.*
+To test on a real iPhone, expose your machine over HTTPS (for example with `ngrok http 3000`) and set `BASE_URL` to the tunnel address.
+
+<br/>
+
+## FAQ
+
+<details>
+<summary><b>Do my customers need to install anything?</b></summary>
+<br/>
+No. Apple Wallet is built into every iPhone, and Google Wallet comes with most Android phones. Customers tap <b>Add to Wallet</b> and they're done.
+</details>
+
+<details>
+<summary><b>How many notifications can I send?</b></summary>
+<br/>
+Apple has no fixed limit. Google shows up to <b>about 3 notifications per card per day</b>; extra messages still update the card, just without the alert. Keep messages useful and people will keep your card.
+</details>
+
+<details>
+<summary><b>Why didn't a notification show up?</b></summary>
+<br/>
+Wallets only notify when the text changes, so sending the exact same message twice produces no second alert. People can also turn notifications off for a card, or remove it. WalletCast detects removed cards and stops counting them.
+</details>
+
+<details>
+<summary><b>How do people unsubscribe?</b></summary>
+<br/>
+They remove the card from their wallet. There are no forms or emails.
+</details>
+
+<details>
+<summary><b>Where is my data stored?</b></summary>
+<br/>
+In your own database, on your own server. Apple and Google only see what's printed on the card. Your wallet certificates and keys stay in environment variables and are never stored in the database.
+</details>
+
+<details>
+<summary><b>Is it really free?</b></summary>
+<br/>
+Yes. WalletCast is open source under AGPL-3.0. You pay only for your hosting (free tiers are enough to start) and Apple's developer membership if you want Apple Wallet.
+</details>
+
+<br/>
+
+## Coming next
+
+- 🗓️ **Scheduled messages**: write now, send Saturday at 9am
+- 📍 **Nearby alerts**: your card appears on the lock screen when customers walk past (Apple)
+- ⭐ **Loyalty stamps** with an in-store scan page
+- 🤖 **Automations**: welcome messages, "we miss you", birthdays
+
+See the full [roadmap](docs/ROADMAP.md).
+
+<br/>
+
+## For developers
+
+WalletCast is built with Next.js 16, TypeScript, Drizzle (Postgres or embedded PGlite), `passkit-generator` and the Google Wallet REST API. The business logic is framework-free and covered by integration tests that run against a real SQL engine.
+
+```bash
+pnpm test            # unit + integration tests
+pnpm test:coverage   # 80% coverage threshold
+pnpm typecheck && pnpm lint
+```
+
+Read [CLAUDE.md](CLAUDE.md) for the architecture and conventions, and [docs/specs](docs/specs) for the design. Contributions are welcome.
+
+<br/>
+
+## Support the project
+
+WalletCast is free and always will be. If it saves you a subscription, you can buy me a coffee:
+
+<a href="https://ko-fi.com/adrbn"><img src="https://img.shields.io/badge/Buy_me_a_coffee-Ko--fi-FF5E5B?style=for-the-badge&logo=kofi&logoColor=white" alt="Support on Ko-fi"></a>
+
+You can also star the repo ⭐ or share it with a business owner who would like it.
+
+<br/>
+
+---
+
+<div align="center">
+<img src="docs/assets/icon.svg" width="48" alt="">
+<br/>
+<sub>Made by <a href="https://github.com/adrbn">@adrbn</a> · <a href="LICENSE">AGPL-3.0</a></sub>
+<br/>
+<sub>Apple Wallet is a trademark of Apple Inc. Google Wallet is a trademark of Google LLC. WalletCast is not affiliated with either.</sub>
+</div>
