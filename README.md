@@ -9,6 +9,8 @@
 <a href="#run-it-with-docker"><img src="https://img.shields.io/badge/Run_with_Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white" alt="Run with Docker"></a>
 <a href="https://github.com/adrbn/walletcast/archive/refs/heads/main.zip"><img src="https://img.shields.io/badge/⬇_Download-Source_.zip-4F46E5?style=for-the-badge" alt="Download source"></a>
 
+<sub>Don't want to self-host? <a href="https://github.com/adrbn/walletcast/issues/1"><b>Join the hosted waitlist →</b></a></sub>
+
 <br/>
 
 [![Apple Wallet](https://img.shields.io/badge/Apple_Wallet-supported-1d1d1f?logo=apple&logoColor=white)](docs/setup-apple.md)
@@ -121,6 +123,14 @@ An embedded database works out of the box. Connect Postgres when you grow.
 | 🧘 **Studios & gyms** | Schedule changes, new classes, last spots left |
 | 🎟️ **Events & venues** | Doors open, line-up updates, last-minute changes |
 | 🚀 **Creators & founders** | A direct line to your community, without a newsletter or social feed |
+
+<br/>
+
+## Don't want to self-host?
+
+A **hosted WalletCast** is in the works. You sign up, design your card and start sending, and the Apple and Google setup is done for you. The code stays open source, and your data stays exportable.
+
+<a href="https://github.com/adrbn/walletcast/issues/1"><img src="https://img.shields.io/badge/Join_the_hosted_waitlist-→-4F46E5?style=for-the-badge" alt="Join the hosted waitlist"></a>
 
 <br/>
 
