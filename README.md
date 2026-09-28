@@ -14,7 +14,7 @@
 [![Apple Wallet](https://img.shields.io/badge/Apple_Wallet-supported-1d1d1f?logo=apple&logoColor=white)](docs/setup-apple.md)
 [![Google Wallet](https://img.shields.io/badge/Google_Wallet-supported-1a73e8?logo=googlepay&logoColor=white)](docs/setup-google.md)
 [![Self-hosted](https://img.shields.io/badge/self--hosted-your_data-4F46E5)](docs/deploy.md)
-[![License: GPL-3.0](https://img.shields.io/badge/license-GPL--3.0-6E6E73)](LICENSE)
+[![License: AGPL-3.0](https://img.shields.io/badge/license-AGPL--3.0-6E6E73)](LICENSE)
 [![CI](https://github.com/adrbn/walletcast/actions/workflows/ci.yml/badge.svg)](https://github.com/adrbn/walletcast/actions/workflows/ci.yml)
 
 **[How it works](#how-it-works) · [Features](#everything-you-need) · [Get started](#get-started) · [FAQ](#faq) · [Support](#support-the-project)**
@@ -197,7 +197,7 @@ In your own database, on your own server. Apple and Google only see what's print
 <details>
 <summary><b>Is it really free?</b></summary>
 <br/>
-Yes. WalletCast is open source under GPL-3.0. You pay only for your hosting (free tiers are enough to start) and Apple's developer membership if you want Apple Wallet.
+Yes. WalletCast is open source under AGPL-3.0. You pay only for your hosting (free tiers are enough to start) and Apple's developer membership if you want Apple Wallet.
 </details>
 
 <br/>
@@ -242,7 +242,7 @@ You can also star the repo ⭐ or share it with a business owner who would like 
 <div align="center">
 <img src="docs/assets/icon.svg" width="48" alt="">
 <br/>
-<sub>Made by <a href="https://github.com/adrbn">@adrbn</a> · <a href="LICENSE">GPL-3.0</a></sub>
+<sub>Made by <a href="https://github.com/adrbn">@adrbn</a> · <a href="LICENSE">AGPL-3.0</a></sub>
 <br/>
 <sub>Apple Wallet is a trademark of Apple Inc. Google Wallet is a trademark of Google LLC. WalletCast is not affiliated with either.</sub>
 </div>
