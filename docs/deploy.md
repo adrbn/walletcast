@@ -48,6 +48,16 @@ node .next/standalone/server.js    # after copying .next/static and src/lib/db/m
 
 The Dockerfile is the reference for that layout, and most of these platforms can build it directly.
 
+## Day glow
+
+Cards with "Glow that follows the hour" get a colour strip that moves from violet at night to amber by day, in six 4-hour slots. The pass only changes when the slot changes, and the update is silent (no notification).
+
+1. Set `CRON_SECRET` on the server (`openssl rand -base64 32`) and, if needed, `GLOW_TIMEZONE` (default `Europe/Rome`).
+2. In your GitHub fork, add the repository secrets `GLOW_CRON_URL=https://<your-host>/api/cron/glow` and the same `CRON_SECRET`.
+3. `.github/workflows/glow.yml` calls the route every hour. Any other scheduler works too: `POST` with `Authorization: Bearer <CRON_SECRET>`.
+
+Without `CRON_SECRET` the route answers 404 and the workflow skips itself.
+
 ## Backups
 
 Everything lives in the database: cards, subscribers and history. Back up Postgres, or the PGlite folder, regularly. Apple and Google credentials stay in environment variables, never in the database.

@@ -128,6 +128,7 @@ An embedded database works out of the box. Connect Postgres when you grow.
 | 🧘 **Studios & gyms** | Schedule changes, new classes, last spots left |
 | 🎟️ **Events & venues** | Doors open, line-up updates, last-minute changes |
 | 🚀 **Creators & founders** | A direct line to your community, without a newsletter or social feed |
+| 🪪 **Living business cards** | A card that shifts colour with the hour, with a share QR and a Save contact link |
 
 <br/>
 
