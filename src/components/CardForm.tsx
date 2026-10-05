@@ -15,7 +15,18 @@ export interface CardFormValues {
   bgColor: string;
   fgColor: string;
   labelColor: string;
+  latestLabel: string;
+  contactUrl: string;
+  barcode: boolean;
+  dayGlow: boolean;
 }
+
+type TextField = Exclude<keyof CardFormValues, "barcode" | "dayGlow">;
+
+const TOGGLES = [
+  ["barcode", "Share QR on the card", "Anyone holding the card can show it to pass it on."],
+  ["dayGlow", "Glow that follows the hour", "A colour strip that shifts from violet at night to amber by day, updated silently."],
+] as const;
 
 const DEFAULTS: CardFormValues = {
   name: "",
@@ -27,6 +38,10 @@ const DEFAULTS: CardFormValues = {
   bgColor: "#111827",
   fgColor: "#ffffff",
   labelColor: "#9ca3af",
+  latestLabel: "LATEST",
+  contactUrl: "",
+  barcode: false,
+  dayGlow: false,
 };
 
 interface Props {
@@ -35,6 +50,10 @@ interface Props {
   existingLogoUrl?: string | null;
   existingIconUrl?: string | null;
   latestMessage?: string | null;
+  /** QR shown in the preview once the card exists. */
+  qrUrl?: string;
+  /** Current day-glow hue, computed on the server so the preview matches the pass. */
+  glowHue: number;
   submitLabel: string;
 }
 
@@ -46,7 +65,7 @@ function useObjectUrl(file: File | null): string | null {
   return url;
 }
 
-export function CardForm({ action, initial, existingLogoUrl, existingIconUrl, latestMessage, submitLabel }: Props) {
+export function CardForm({ action, initial, existingLogoUrl, existingIconUrl, latestMessage, qrUrl, glowHue, submitLabel }: Props) {
   const [state, formAction, pending] = useActionState(action, {});
   const [values, setValues] = useState<CardFormValues>({ ...DEFAULTS, ...initial });
   const [slugTouched, setSlugTouched] = useState(Boolean(initial?.slug));
@@ -56,7 +75,7 @@ export function CardForm({ action, initial, existingLogoUrl, existingIconUrl, la
   const logoPreview = useObjectUrl(logoFile);
   const iconPreview = useObjectUrl(iconFile);
 
-  const set = (key: keyof CardFormValues) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const set = (key: TextField) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const value = e.target.value;
     setValues((prev) => {
       const next = { ...prev, [key]: value };
@@ -119,6 +138,38 @@ export function CardForm({ action, initial, existingLogoUrl, existingIconUrl, la
           {err("websiteUrl")}
         </label>
 
+        <div className="grid gap-5 sm:grid-cols-2">
+          <label className="block">
+            <span className="field-label">Label of the latest message</span>
+            <input name="latestLabel" className="input" maxLength={12} value={values.latestLabel} onChange={set("latestLabel")} />
+            {err("latestLabel")}
+          </label>
+          <label className="block">
+            <span className="field-label">Contact file (vCard link)</span>
+            <input name="contactUrl" type="url" className="input" placeholder="https://" value={values.contactUrl} onChange={set("contactUrl")} />
+            <p className="field-hint">Adds a Save contact button to the public page.</p>
+            {err("contactUrl")}
+          </label>
+        </div>
+
+        <div className="space-y-3">
+          {TOGGLES.map(([key, label, hint]) => (
+            <label key={key} className="flex items-start gap-3 text-sm">
+              <input
+                type="checkbox"
+                name={key}
+                className="mt-1"
+                checked={values[key]}
+                onChange={(e) => setValues((prev) => ({ ...prev, [key]: e.target.checked }))}
+              />
+              <span>
+                <span className="font-medium">{label}</span>
+                <span className="block text-muted">{hint}</span>
+              </span>
+            </label>
+          ))}
+        </div>
+
         <div className="grid grid-cols-3 gap-4">
           {(["bgColor", "fgColor", "labelColor"] as const).map((key) => (
             <label key={key} className="block">
@@ -157,6 +208,8 @@ export function CardForm({ action, initial, existingLogoUrl, existingIconUrl, la
         <PassPreview
           {...values}
           message={latestMessage || values.welcomeText}
+          glowHue={values.dayGlow ? glowHue : null}
+          qrUrl={qrUrl}
           logoUrl={logoPreview ?? (removeLogo ? null : existingLogoUrl)}
           iconUrl={iconPreview ?? existingIconUrl}
         />

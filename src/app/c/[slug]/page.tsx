@@ -6,6 +6,7 @@ import { getServices } from "@/lib/services";
 import { imageUrl } from "@/lib/google/objects";
 import { latestMessageText } from "@/lib/apple/pass";
 import { normaliseSource } from "@/lib/cards/links";
+import { glowSlot, slotHue } from "@/lib/glow/hue";
 import { PassPreview } from "@/components/PassPreview";
 
 export async function generateMetadata({ params }: PageProps<"/c/[slug]">): Promise<Metadata> {
@@ -13,7 +14,7 @@ export async function generateMetadata({ params }: PageProps<"/c/[slug]">): Prom
   const { cards } = await getServices();
   const card = await cards.findBySlug(slug);
   return card
-    ? { title: `${card.name} · ${card.organizationName}`, description: `Add ${card.organizationName} to your wallet.` }
+    ? { title: { absolute: card.name }, description: `Add ${card.name} to your wallet.` }
     : { title: "Card not found" };
 }
 
@@ -26,12 +27,14 @@ export default async function PublicCardPage({ params, searchParams }: PageProps
 
   const os = userAgent({ headers: await headers() }).os.name ?? "";
   const isAndroid = /android/i.test(os);
+  const isApple = /ios|mac/i.test(os);
   const source = normaliseSource(typeof src === "string" ? src : null);
+  // Only offer the wallet the visitor can use; desktop visitors see both.
   const buttons = [
-    config.apple && { key: "apple", label: "Add to Apple Wallet", action: `/api/passes/apple/${card.slug}` },
-    config.google && { key: "google", label: "Add to Google Wallet", action: `/api/passes/google/${card.slug}` },
+    config.apple && !isAndroid && { key: "apple", label: "Add to Apple Wallet", action: `/api/passes/apple/${card.slug}` },
+    config.google && !isApple && { key: "google", label: "Add to Google Wallet", action: `/api/passes/google/${card.slug}` },
   ].filter((b): b is { key: string; label: string; action: string } => Boolean(b));
-  if (isAndroid) buttons.reverse();
+  const websiteHost = card.websiteUrl ? new URL(card.websiteUrl).host : null;
 
   return (
     <main className="flex flex-1 flex-col items-center px-5 py-10" style={{ background: `${card.bgColor}14` }}>
@@ -45,16 +48,34 @@ export default async function PublicCardPage({ params, searchParams }: PageProps
           labelColor={card.labelColor}
           logoUrl={card.logo ? imageUrl("", card, "logo") : null}
           iconUrl={imageUrl("", card, "icon")}
+          latestLabel={card.latestLabel}
+          barcode={card.barcode}
+          qrUrl={`/api/cards/${card.id}/qr?src=pass`}
+          glowHue={card.dayGlow ? slotHue(glowSlot(new Date(), config.glowTimeZone)) : null}
         />
 
         <div className="space-y-2 text-center">
-          <h1 className="text-xl font-semibold">Get {card.organizationName}&apos;s news on your lock screen</h1>
+          <h1 className="text-xl font-semibold">Add {card.name} to your wallet</h1>
           {card.description && <p className="text-sm text-muted">{card.description}</p>}
           <p className="text-xs text-muted">No app, no account. Remove the card anytime to stop.</p>
         </div>
 
         {buttons.length === 0 ? (
-          <p className="panel text-center text-sm text-muted">This card is not available yet.</p>
+          <div className="space-y-3">
+            {card.contactUrl && (
+              <a href={card.contactUrl} className="btn-primary block w-full py-3 text-center text-base">
+                Save contact
+              </a>
+            )}
+            {card.websiteUrl && (
+              <a href={card.websiteUrl} className="btn-secondary block w-full py-3 text-center text-base">
+                {websiteHost}
+              </a>
+            )}
+            {!card.contactUrl && !card.websiteUrl && (
+              <p className="panel text-center text-sm text-muted">This card is not available yet.</p>
+            )}
+          </div>
         ) : (
           <form method="post" className="space-y-3">
             {source && <input type="hidden" name="src" value={source} />}
@@ -75,6 +96,11 @@ export default async function PublicCardPage({ params, searchParams }: PageProps
               <p className="text-center text-sm text-danger">
                 {error === "429" ? "Too many attempts, try again in a minute." : error === "400" ? "That email address looks invalid." : "Something went wrong. Please try again."}
               </p>
+            )}
+            {card.contactUrl && (
+              <a href={card.contactUrl} className="block text-center text-sm underline">
+                Save contact
+              </a>
             )}
           </form>
         )}

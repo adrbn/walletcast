@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { getServices } from "@/lib/services";
 import { publicCardUrl } from "@/lib/cards/links";
 import { imageUrl } from "@/lib/google/objects";
+import { glowSlot, slotHue } from "@/lib/glow/hue";
 import { CardForm } from "@/components/CardForm";
 import { SendForm } from "@/components/SendForm";
 import { QrPanel } from "@/components/QrPanel";
@@ -115,6 +116,8 @@ export default async function CardPage({ params }: PageProps<"/dashboard/cards/[
           action={updateCardAction.bind(null, card.id)}
           submitLabel="Save changes"
           latestMessage={card.latestMessage}
+          qrUrl={`/api/cards/${card.id}/qr?src=pass`}
+          glowHue={slotHue(glowSlot(new Date(), config.glowTimeZone))}
           existingLogoUrl={card.logo ? imageUrl("", card, "logo") : null}
           existingIconUrl={imageUrl("", card, "icon")}
           initial={{
@@ -127,6 +130,10 @@ export default async function CardPage({ params }: PageProps<"/dashboard/cards/[
             bgColor: card.bgColor,
             fgColor: card.fgColor,
             labelColor: card.labelColor,
+            latestLabel: card.latestLabel,
+            contactUrl: card.contactUrl ?? "",
+            barcode: card.barcode,
+            dayGlow: card.dayGlow,
           }}
         />
       </section>

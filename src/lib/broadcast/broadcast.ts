@@ -36,7 +36,7 @@ export class CardNotFoundError extends Error {
 
 /** Text stored on the pass: this is what Apple shows in the lock-screen notification. */
 export function passText(input: MessageInput): string {
-  return `${input.title} — ${input.body}`;
+  return `${input.title}: ${input.body}`;
 }
 
 export async function broadcast(deps: BroadcastDeps, cardId: string, input: MessageInput): Promise<BroadcastResult> {
