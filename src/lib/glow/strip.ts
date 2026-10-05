@@ -14,6 +14,10 @@ const BRIGHTNESS = 0.92;
 const SPREAD = 0.11;
 /** Less on the warm side, so daytime gold never drifts into green. */
 const WARM_SPREAD = 0.06;
+/** Film grain over the glow; it fades out with the glow so the strip meets the flat card colour without a seam. */
+const GRAIN_OPACITY = 0.3;
+/** Grain is gone by this fraction of the strip height. */
+const GRAIN_END = 0.85;
 
 const wrap = (h: number) => h - Math.floor(h);
 
@@ -57,11 +61,32 @@ function stripSvg(hue: number, bgColor: string, scale: number): string {
 </svg>`;
 }
 
+/** Grey noise for an overlay blend, seeded so the same strip renders to the same bytes. */
+function grain(width: number, height: number): Buffer {
+  const px = Buffer.alloc(width * height * 4);
+  let seed = 7;
+  for (let y = 0; y < height; y++) {
+    const alpha = Math.round(255 * GRAIN_OPACITY * Math.max(0, 1 - y / (height * GRAIN_END)));
+    for (let x = 0; x < width; x++) {
+      seed = (seed * 1664525 + 1013904223) >>> 0;
+      const i = (y * width + x) * 4;
+      px.fill(seed >>> 24, i, i + 3);
+      px[i + 3] = alpha;
+    }
+  }
+  return px;
+}
+
 export async function renderStrips(hue: number, bgColor: string): Promise<Record<string, Buffer>> {
   const entries = await Promise.all(
     STRIP_SIZES.map(async ({ file, width, height }) => {
       const svg = Buffer.from(stripSvg(hue, bgColor, width / 375));
-      return [file, await sharp(svg).resize(width, height).png().toBuffer()] as const;
+      const png = await sharp(svg)
+        .resize(width, height)
+        .composite([{ input: grain(width, height), raw: { width, height, channels: 4 }, blend: "overlay" }])
+        .png()
+        .toBuffer();
+      return [file, png] as const;
     }),
   );
   return Object.fromEntries(entries);
