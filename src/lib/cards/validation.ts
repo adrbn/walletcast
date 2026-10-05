@@ -27,6 +27,15 @@ export const CardInputSchema = z.object({
   bgColor: hexColor.default("#111827"),
   fgColor: hexColor.default("#ffffff"),
   labelColor: hexColor.default("#9ca3af"),
+  barcode: z.stringbool().default(false),
+  latestLabel: z
+    .string()
+    .trim()
+    .transform((v) => v || "LATEST")
+    .pipe(z.string().max(12, "Label: 12 characters max"))
+    .default("LATEST"),
+  contactUrl: optionalUrl.default(null),
+  dayGlow: z.stringbool().default(false),
 });
 
 export type CardInput = z.infer<typeof CardInputSchema>;

@@ -125,3 +125,36 @@ describe("images", () => {
     expect((await sharp(icon).metadata()).width).toBe(87);
   });
 });
+
+describe("business-card options", () => {
+  it("defaults every option off", () => {
+    expect(input()).toMatchObject({ barcode: false, dayGlow: false, latestLabel: "LATEST", contactUrl: null });
+    expect(input({ latestLabel: "  " }).latestLabel).toBe("LATEST");
+  });
+
+  it("parses checkbox values and trims the label", () => {
+    const parsed = input({ barcode: "on", dayGlow: "on", latestLabel: " NOW ", contactUrl: "https://adrbn.dev/me.vcf" });
+    expect(parsed).toMatchObject({ barcode: true, dayGlow: true, latestLabel: "NOW", contactUrl: "https://adrbn.dev/me.vcf" });
+  });
+
+  it("rejects long labels and non-http contact links", () => {
+    expect(CardInputSchema.safeParse({ ...input(), latestLabel: "x".repeat(13) }).success).toBe(false);
+    expect(CardInputSchema.safeParse({ ...input(), contactUrl: "javascript:alert(1)" }).success).toBe(false);
+  });
+
+  it("lists day-glow cards and records the pushed slot on cards and passes", async () => {
+    const db = await createTestDb();
+    const repo = createCardRepository(db);
+    const subs = createSubscriberRepository(db);
+    const glow = await repo.create(input({ slug: "glow", dayGlow: "on" }));
+    await repo.create(input({ slug: "plain" }));
+    const sub = await subs.create({ cardId: glow.id, platform: "apple" });
+
+    expect((await repo.listDayGlow()).map((c) => c.slug)).toEqual(["glow"]);
+
+    const at = new Date("2030-10-10T08:00:00Z");
+    await repo.markGlowSlot(glow.id, 2, at);
+    expect((await repo.findById(glow.id))?.glowSlot).toBe(2);
+    expect((await subs.findBySerial(sub.serialNumber))?.updatedAt.getTime()).toBe(at.getTime());
+  });
+});

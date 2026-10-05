@@ -113,6 +113,21 @@ export function createCardRepository(db: Db) {
       });
     },
 
+    async listDayGlow(): Promise<Card[]> {
+      return db.select().from(cards).where(eq(cards.dayGlow, true));
+    },
+
+    /** Record the glow slot now on the passes and mark them changed so devices refetch. */
+    async markGlowSlot(id: string, slot: number, at: Date): Promise<void> {
+      await db.transaction(async (tx) => {
+        await tx.update(cards).set({ glowSlot: slot, updatedAt: at }).where(eq(cards.id, id));
+        await tx
+          .update(subscribers)
+          .set({ updatedAt: at })
+          .where(and(eq(subscribers.cardId, id), eq(subscribers.status, "active")));
+      });
+    },
+
     async listMessages(cardId: string, limit = 50): Promise<Message[]> {
       return db
         .select()

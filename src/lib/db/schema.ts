@@ -1,4 +1,5 @@
 import {
+  boolean,
   customType,
   index,
   integer,
@@ -35,6 +36,11 @@ export const cards = pgTable("cards", {
   icon: bytea("icon"),
   latestMessage: text("latest_message"),
   latestMessageAt: timestamp("latest_message_at", { withTimezone: true }),
+  barcode: boolean("barcode").notNull().default(false),
+  latestLabel: text("latest_label").notNull().default("LATEST"),
+  contactUrl: text("contact_url"),
+  dayGlow: boolean("day_glow").notNull().default(false),
+  glowSlot: integer("glow_slot"),
   ...timestamps,
 });
 
