@@ -135,6 +135,7 @@ export default async function CardPage({ params }: PageProps<"/dashboard/cards/[
             logoText: card.logoText,
             headerLabel: card.headerLabel,
             headerValue: card.headerValue,
+            nameLabel: card.nameLabel,
             barcode: card.barcode,
             dayGlow: card.dayGlow,
           }}

@@ -98,7 +98,7 @@ export async function buildApplePass({
   if (card.headerValue) {
     pass.headerFields.push({ key: "header", label: card.headerLabel.toUpperCase(), value: card.headerValue });
   }
-  pass.primaryFields.push({ key: "name", label: card.organizationName.toUpperCase(), value: card.name });
+  pass.primaryFields.push({ key: "name", label: (card.nameLabel || card.organizationName).toUpperCase(), value: card.name });
   pass.secondaryFields.push({
     key: LATEST_FIELD_KEY,
     label: card.latestLabel,

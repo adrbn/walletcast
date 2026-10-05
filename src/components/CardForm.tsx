@@ -20,6 +20,7 @@ export interface CardFormValues {
   logoText: string;
   headerLabel: string;
   headerValue: string;
+  nameLabel: string;
   barcode: boolean;
   dayGlow: boolean;
 }
@@ -46,6 +47,7 @@ const DEFAULTS: CardFormValues = {
   logoText: "",
   headerLabel: "",
   headerValue: "",
+  nameLabel: "",
   barcode: false,
   dayGlow: false,
 };
@@ -157,6 +159,13 @@ export function CardForm({ action, initial, existingLogoUrl, existingIconUrl, la
             {err("contactUrl")}
           </label>
         </div>
+
+        <label className="block">
+          <span className="field-label">Label above the name</span>
+          <input name="nameLabel" className="input" maxLength={24} placeholder={values.organizationName || "AI engineer"} value={values.nameLabel} onChange={set("nameLabel")} />
+          <p className="field-hint">Defaults to the business name.</p>
+          {err("nameLabel")}
+        </label>
 
         <div className="grid gap-5 sm:grid-cols-3">
           <label className="block">

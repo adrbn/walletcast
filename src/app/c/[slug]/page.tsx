@@ -52,6 +52,7 @@ export default async function PublicCardPage({ params, searchParams }: PageProps
           logoText={card.logoText}
           headerLabel={card.headerLabel}
           headerValue={card.headerValue}
+          nameLabel={card.nameLabel}
           barcode={card.barcode}
           qrUrl={`/api/cards/${card.id}/qr?src=pass`}
           glowHue={card.dayGlow ? slotHue(glowSlot(new Date(), config.glowTimeZone)) : null}

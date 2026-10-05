@@ -138,7 +138,7 @@ describe("business-card options", () => {
   });
 
   it("keeps logo text and header field optional", () => {
-    expect(input()).toMatchObject({ logoText: "", headerLabel: "", headerValue: "" });
+    expect(input()).toMatchObject({ logoText: "", headerLabel: "", headerValue: "", nameLabel: "" });
     expect(() => input({ headerValue: "x".repeat(25) })).toThrow(/20 characters/);
   });
 

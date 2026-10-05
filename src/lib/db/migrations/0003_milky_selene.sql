@@ -1,0 +1,1 @@
+ALTER TABLE "cards" ADD COLUMN "name_label" text DEFAULT '' NOT NULL;

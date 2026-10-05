@@ -11,6 +11,7 @@ export interface PassPreviewProps {
   logoText?: string;
   headerLabel?: string;
   headerValue?: string;
+  nameLabel?: string;
   barcode?: boolean;
   /** Real QR image when the card exists; a blank square stands in before it is saved. */
   qrUrl?: string | null;
@@ -29,6 +30,17 @@ function glowBackground(hue: number, bg: string): string {
     `radial-gradient(48% 150% at 90% -8%, ${hsl(hue + 0.06)}, transparent)`,
     bg,
   ].join(", ");
+}
+
+function nameBlock(props: PassPreviewProps) {
+  return (
+    <>
+      <div className="text-[11px] font-semibold uppercase tracking-wide" style={{ color: props.labelColor }}>
+        {props.nameLabel || props.organizationName}
+      </div>
+      <div className="text-2xl font-semibold">{props.name || "Card name"}</div>
+    </>
+  );
 }
 
 /** Approximation of how the pass looks in Apple Wallet. */
@@ -69,10 +81,10 @@ export function PassPreview(props: PassPreviewProps) {
           className="-mx-5 mt-4 flex aspect-[375/123] flex-col justify-end px-5 pb-3"
           style={{ background: glowBackground(props.glowHue, props.bgColor) }}
         >
-          <div className="text-2xl font-semibold">{props.name || "Card name"}</div>
+          {nameBlock(props)}
         </div>
       ) : (
-        <div className="mt-8 text-2xl font-semibold">{props.name || "Card name"}</div>
+        <div className="mt-8">{nameBlock(props)}</div>
       )}
       <div className="mt-6">
         <div className="text-[11px] font-semibold uppercase tracking-wide" style={{ color: props.labelColor }}>

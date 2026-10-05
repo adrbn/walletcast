@@ -77,6 +77,9 @@ describe("buildApplePass", () => {
     const plain = await passJsonFor({});
     expect(plain.json.logoText).toBe(plain.card.name);
     expect(plain.json.generic.headerFields).toEqual([]);
+    expect(plain.json.generic.primaryFields[0].label).toBe(plain.card.organizationName.toUpperCase());
+    const titled = await passJsonFor({ nameLabel: "AI engineer" });
+    expect(titled.json.generic.primaryFields[0].label).toBe("AI ENGINEER");
   });
 
   it("turns day-glow cards into store cards with a strip", async () => {

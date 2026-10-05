@@ -42,6 +42,7 @@ export const cards = pgTable("cards", {
   logoText: text("logo_text").notNull().default(""),
   headerLabel: text("header_label").notNull().default(""),
   headerValue: text("header_value").notNull().default(""),
+  nameLabel: text("name_label").notNull().default(""),
   dayGlow: boolean("day_glow").notNull().default(false),
   glowSlot: integer("glow_slot"),
   ...timestamps,

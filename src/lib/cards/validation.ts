@@ -38,6 +38,7 @@ export const CardInputSchema = z.object({
   logoText: z.string().trim().max(20, "Logo text: 20 characters max").default(""),
   headerLabel: z.string().trim().max(12, "Header label: 12 characters max").default(""),
   headerValue: z.string().trim().max(20, "Header value: 20 characters max").default(""),
+  nameLabel: z.string().trim().max(24, "Label above the name: 24 characters max").default(""),
   dayGlow: z.stringbool().default(false),
 });
 
