@@ -1,5 +1,6 @@
 import type { Card, Subscriber } from "@/lib/db/schema";
 import { latestMessageText } from "@/lib/apple/pass";
+import { publicCardUrl } from "@/lib/cards/links";
 
 /**
  * Mapping WalletCast cards/subscribers to Google Wallet Generic passes.
@@ -73,6 +74,7 @@ export function buildObjectPatch(card: Card, baseUrl: string) {
           },
         }
       : {}),
+    ...(card.barcode ? { barcode: { type: "QR_CODE", value: publicCardUrl(baseUrl, card.slug, "pass") } } : {}),
     textModulesData: [
       { id: "latest", header: "Latest", body: latestMessageText(card) },
       ...(card.description ? [{ id: "about", header: "About", body: card.description }] : []),

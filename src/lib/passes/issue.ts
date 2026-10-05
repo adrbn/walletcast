@@ -47,7 +47,13 @@ export async function issueApplePass(
     email: request.email,
     source: request.src,
   });
-  return buildApplePass({ card, subscriber, apple: config.apple, baseUrl: config.baseUrl });
+  return buildApplePass({
+    card,
+    subscriber,
+    apple: config.apple,
+    baseUrl: config.baseUrl,
+    timeZone: config.glowTimeZone,
+  });
 }
 
 export async function issueGooglePass(

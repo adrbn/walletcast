@@ -2,6 +2,9 @@ import { PKPass } from "passkit-generator";
 import type { AppleConfig } from "@/lib/config/env";
 import type { Card, Subscriber } from "@/lib/db/schema";
 import { generateDefaultIcon, LOGO_MASTER, resizePng } from "@/lib/cards/images";
+import { publicCardUrl } from "@/lib/cards/links";
+import { glowSlot, slotHue } from "@/lib/glow/hue";
+import { renderStrips } from "@/lib/glow/strip";
 
 export const APPLE_WEB_SERVICE_PATH = "/api/apple";
 export const LATEST_FIELD_KEY = "latest";
@@ -37,10 +40,22 @@ export interface BuildApplePassArgs {
   subscriber: Pick<Subscriber, "serialNumber" | "authToken">;
   apple: AppleConfig;
   baseUrl: string;
+  /** Time zone whose hour picks the day-glow strip. */
+  timeZone?: string;
+  now?: Date;
 }
 
 /** Build and sign a .pkpass for one subscriber. */
-export async function buildApplePass({ card, subscriber, apple, baseUrl }: BuildApplePassArgs): Promise<Buffer> {
+export async function buildApplePass({
+  card,
+  subscriber,
+  apple,
+  baseUrl,
+  timeZone = "Europe/Rome",
+  now = new Date(),
+}: BuildApplePassArgs): Promise<Buffer> {
+  // A store card is the style that shows a full-width strip behind the name.
+  const style = card.dayGlow ? "storeCard" : "generic";
   const passJson = {
     formatVersion: 1,
     passTypeIdentifier: apple.passTypeId,
@@ -55,11 +70,23 @@ export async function buildApplePass({ card, subscriber, apple, baseUrl }: Build
     foregroundColor: hexToRgb(card.fgColor),
     labelColor: hexToRgb(card.labelColor),
     sharingProhibited: false,
-    generic: {},
+    [style]: {},
+    ...(card.barcode
+      ? {
+          barcodes: [
+            {
+              format: "PKBarcodeFormatQR",
+              message: publicCardUrl(baseUrl, card.slug, "pass"),
+              messageEncoding: "iso-8859-1",
+            },
+          ],
+        }
+      : {}),
   };
+  const strips = card.dayGlow ? await renderStrips(slotHue(glowSlot(now, timeZone)), card.bgColor) : {};
 
   const pass = new PKPass(
-    { "pass.json": Buffer.from(JSON.stringify(passJson)), ...(await imageBuffers(card)) },
+    { "pass.json": Buffer.from(JSON.stringify(passJson)), ...(await imageBuffers(card)), ...strips },
     {
       wwdr: apple.wwdr,
       signerCert: apple.signerCert,
@@ -71,7 +98,7 @@ export async function buildApplePass({ card, subscriber, apple, baseUrl }: Build
   pass.primaryFields.push({ key: "name", label: card.organizationName.toUpperCase(), value: card.name });
   pass.secondaryFields.push({
     key: LATEST_FIELD_KEY,
-    label: "LATEST",
+    label: card.latestLabel,
     value: latestMessageText(card),
     // Wallet shows a lock-screen notification when this value changes.
     changeMessage: "%@",
@@ -81,7 +108,7 @@ export async function buildApplePass({ card, subscriber, apple, baseUrl }: Build
     { key: "latest_back", label: "Latest message", value: latestMessageText(card) },
     card.description && { key: "about", label: "About", value: card.description },
     card.websiteUrl && { key: "website", label: "Website", value: card.websiteUrl },
-    { key: "powered", label: "Powered by", value: "WalletCast — open-source wallet notifications" },
+    { key: "powered", label: "Powered by", value: "WalletCast, open-source wallet notifications" },
   ].filter(Boolean) as { key: string; label: string; value: string }[];
   pass.backFields.push(...back);
 

@@ -32,6 +32,19 @@ const EnvSchema = z.object({
 
   GOOGLE_ISSUER_ID: optionalString,
   GOOGLE_SERVICE_ACCOUNT_JSON: optionalString,
+
+  GLOW_TIMEZONE: z
+    .string()
+    .default("Europe/Rome")
+    .refine((tz) => {
+      try {
+        new Intl.DateTimeFormat("en", { timeZone: tz });
+        return true;
+      } catch {
+        return false;
+      }
+    }, "GLOW_TIMEZONE must be an IANA time zone like Europe/Rome"),
+  CRON_SECRET: optionalString,
 });
 
 export type RawEnv = z.infer<typeof EnvSchema>;
@@ -64,6 +77,10 @@ export interface AppConfig {
   pgliteDir: string;
   apple: AppleConfig | null;
   google: GoogleConfig | null;
+  /** Time zone whose hour drives the day glow. */
+  glowTimeZone: string;
+  /** Bearer secret for POST /api/cron/glow; the route is off without it. */
+  cronSecret?: string;
   /** Human readable problems with partially configured integrations. */
   warnings: string[];
 }
@@ -157,6 +174,8 @@ export function parseConfig(source: Record<string, string | undefined>): AppConf
     pgliteDir: raw.PGLITE_DIR,
     apple: parseApple(raw, warnings),
     google: parseGoogle(raw, warnings),
+    glowTimeZone: raw.GLOW_TIMEZONE,
+    cronSecret: raw.CRON_SECRET,
     warnings,
   };
 }

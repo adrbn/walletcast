@@ -1,4 +1,5 @@
 import http2 from "node:http2";
+import { inflateRawSync } from "node:zlib";
 import type { AddressInfo } from "node:net";
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import type { Db } from "@/lib/db/client";
@@ -28,7 +29,57 @@ function zipEntries(buf: Buffer): string[] {
   return names;
 }
 
+/** Read one entry of a .pkpass (stored or deflated). */
+function zipRead(buf: Buffer, name: string): Buffer {
+  let offset = 0;
+  while (buf.readUInt32LE(offset) === 0x04034b50) {
+    const method = buf.readUInt16LE(offset + 8);
+    const size = buf.readUInt32LE(offset + 18);
+    const nameLen = buf.readUInt16LE(offset + 26);
+    const extraLen = buf.readUInt16LE(offset + 28);
+    const start = offset + 30 + nameLen + extraLen;
+    if (buf.subarray(offset + 30, offset + 30 + nameLen).toString() === name) {
+      const data = buf.subarray(start, start + size);
+      return method === 8 ? inflateRawSync(data) : data;
+    }
+    offset = start + size;
+  }
+  throw new Error(`${name} not in pass`);
+}
+
+async function passJsonFor(over: Record<string, unknown>, extra: { timeZone?: string; now?: Date } = {}) {
+  const db = await createTestDb();
+  const card = await createCardRepository(db).create(CardInputSchema.parse({ name: "Lu's Café", organizationName: "Lu", slug: "lu", ...over }));
+  const sub = await createSubscriberRepository(db).create({ cardId: card.id, platform: "apple" });
+  const pkpass = await buildApplePass({ card, subscriber: sub, apple, baseUrl: "https://wc.test", ...extra });
+  return { card, pkpass, json: JSON.parse(zipRead(pkpass, "pass.json").toString()) };
+}
+
 describe("buildApplePass", () => {
+  it("keeps plain cards generic, labelled LATEST and without barcode", async () => {
+    const { json } = await passJsonFor({});
+    expect(json.generic.secondaryFields[0].label).toBe("LATEST");
+    expect(json.storeCard).toBeUndefined();
+    expect(json.barcodes).toBeUndefined();
+    expect(JSON.stringify(json)).not.toMatch(/\u2014|—/);
+  });
+
+  it("adds the share QR and the custom label", async () => {
+    const { json } = await passJsonFor({ slug: "adrien", barcode: "on", latestLabel: "NOW" });
+    expect(json.barcodes[0]).toMatchObject({ format: "PKBarcodeFormatQR", message: "https://wc.test/c/adrien?src=pass" });
+    expect(json.generic.secondaryFields[0].label).toBe("NOW");
+  });
+
+  it("turns day-glow cards into store cards with a strip", async () => {
+    const { card, pkpass, json } = await passJsonFor(
+      { dayGlow: "on" },
+      { timeZone: "Europe/Rome", now: new Date("2026-10-10T07:30:00Z") },
+    );
+    expect(json.storeCard.primaryFields[0].value).toBe(card.name);
+    expect(json.generic).toBeUndefined();
+    expect(zipEntries(pkpass)).toEqual(expect.arrayContaining(["strip.png", "strip@2x.png", "strip@3x.png"]));
+  });
+
   it("produces a signed pkpass bundle", async () => {
     const db = await createTestDb();
     const card = await createCardRepository(db).create(cardInput);

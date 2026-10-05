@@ -12,6 +12,13 @@ describe("parseConfig", () => {
     expect(config.warnings).toEqual([]);
   });
 
+  it("reads the glow time zone and cron secret", () => {
+    expect(parseConfig({}).glowTimeZone).toBe("Europe/Rome");
+    const config = parseConfig({ GLOW_TIMEZONE: "Europe/Lisbon", CRON_SECRET: "s".repeat(24) });
+    expect([config.glowTimeZone, config.cronSecret]).toEqual(["Europe/Lisbon", "s".repeat(24)]);
+    expect(() => parseConfig({ GLOW_TIMEZONE: "Mars/Olympus" })).toThrow();
+  });
+
   it("strips trailing slashes from BASE_URL", () => {
     expect(parseConfig({ BASE_URL: "https://x.dev///" }).baseUrl).toBe("https://x.dev");
   });

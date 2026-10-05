@@ -39,7 +39,7 @@ async function build(): Promise<Services> {
           apple,
           cards,
           subscribers,
-          buildPass: (card, subscriber) => buildApplePass({ card, subscriber, apple, baseUrl: config.baseUrl }),
+          buildPass: (card, subscriber) => buildApplePass({ card, subscriber, apple, baseUrl: config.baseUrl, timeZone: config.glowTimeZone }),
           log: (line) => console.info(`[apple-wallet] ${line}`),
         })
       : null,

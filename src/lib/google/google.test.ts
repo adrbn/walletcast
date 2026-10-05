@@ -65,6 +65,14 @@ describe("google object mapping", () => {
     expect(withLogo.textModulesData).toHaveLength(1);
   });
 
+  it("adds the share QR to Google objects when enabled", () => {
+    expect(buildObjectPatch({ ...card, barcode: true }, "https://wc.test").barcode).toEqual({
+      type: "QR_CODE",
+      value: "https://wc.test/c/lu?src=pass",
+    });
+    expect(buildObjectPatch({ ...card, barcode: false }, "https://wc.test").barcode).toBeUndefined();
+  });
+
   it("builds class, patch and message payloads", () => {
     expect(buildGenericClass(google.issuerId, card).id).toBe(classId(google.issuerId, card));
     expect(buildObjectPatch({ ...card, latestMessage: "Sale!" }, "https://wc.test").textModulesData[0].body).toBe("Sale!");
