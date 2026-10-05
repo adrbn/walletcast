@@ -15,6 +15,13 @@
       "when": 1791192876172,
       "tag": "0001_modern_the_phantom",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1791194904769,
+      "tag": "0002_dusty_major_mapleleaf",
+      "breakpoints": true
     }
   ]
 }

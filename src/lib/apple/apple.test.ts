@@ -70,6 +70,15 @@ describe("buildApplePass", () => {
     expect(json.generic.secondaryFields[0].label).toBe("NOW");
   });
 
+  it("shows the logo text and an optional header field", async () => {
+    const { json } = await passJsonFor({ logoText: "adrbn", headerLabel: "Rome", headerValue: "DevFest" });
+    expect(json.logoText).toBe("adrbn");
+    expect(json.generic.headerFields[0]).toMatchObject({ label: "ROME", value: "DevFest" });
+    const plain = await passJsonFor({});
+    expect(plain.json.logoText).toBe(plain.card.name);
+    expect(plain.json.generic.headerFields).toEqual([]);
+  });
+
   it("turns day-glow cards into store cards with a strip", async () => {
     const { card, pkpass, json } = await passJsonFor(
       { dayGlow: "on" },

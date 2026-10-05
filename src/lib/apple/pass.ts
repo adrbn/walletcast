@@ -65,7 +65,7 @@ export async function buildApplePass({
     webServiceURL: `${baseUrl}${APPLE_WEB_SERVICE_PATH}`,
     organizationName: card.organizationName,
     description: card.name,
-    logoText: card.logo ? undefined : card.name,
+    logoText: card.logoText || (card.logo ? undefined : card.name),
     backgroundColor: hexToRgb(card.bgColor),
     foregroundColor: hexToRgb(card.fgColor),
     labelColor: hexToRgb(card.labelColor),
@@ -95,6 +95,9 @@ export async function buildApplePass({
     },
   );
 
+  if (card.headerValue) {
+    pass.headerFields.push({ key: "header", label: card.headerLabel.toUpperCase(), value: card.headerValue });
+  }
   pass.primaryFields.push({ key: "name", label: card.organizationName.toUpperCase(), value: card.name });
   pass.secondaryFields.push({
     key: LATEST_FIELD_KEY,
@@ -108,6 +111,7 @@ export async function buildApplePass({
     { key: "latest_back", label: "Latest message", value: latestMessageText(card) },
     card.description && { key: "about", label: "About", value: card.description },
     card.websiteUrl && { key: "website", label: "Website", value: card.websiteUrl },
+    card.contactUrl && { key: "contact", label: "Save contact", value: card.contactUrl },
     { key: "powered", label: "Powered by", value: "WalletCast, open-source wallet notifications" },
   ].filter(Boolean) as { key: string; label: string; value: string }[];
   pass.backFields.push(...back);

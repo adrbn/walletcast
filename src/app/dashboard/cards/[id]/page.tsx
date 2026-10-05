@@ -132,6 +132,9 @@ export default async function CardPage({ params }: PageProps<"/dashboard/cards/[
             labelColor: card.labelColor,
             latestLabel: card.latestLabel,
             contactUrl: card.contactUrl ?? "",
+            logoText: card.logoText,
+            headerLabel: card.headerLabel,
+            headerValue: card.headerValue,
             barcode: card.barcode,
             dayGlow: card.dayGlow,
           }}

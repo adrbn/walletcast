@@ -17,6 +17,9 @@ export interface CardFormValues {
   labelColor: string;
   latestLabel: string;
   contactUrl: string;
+  logoText: string;
+  headerLabel: string;
+  headerValue: string;
   barcode: boolean;
   dayGlow: boolean;
 }
@@ -40,6 +43,9 @@ const DEFAULTS: CardFormValues = {
   labelColor: "#9ca3af",
   latestLabel: "LATEST",
   contactUrl: "",
+  logoText: "",
+  headerLabel: "",
+  headerValue: "",
   barcode: false,
   dayGlow: false,
 };
@@ -149,6 +155,24 @@ export function CardForm({ action, initial, existingLogoUrl, existingIconUrl, la
             <input name="contactUrl" type="url" className="input" placeholder="https://" value={values.contactUrl} onChange={set("contactUrl")} />
             <p className="field-hint">Adds a Save contact button to the public page.</p>
             {err("contactUrl")}
+          </label>
+        </div>
+
+        <div className="grid gap-5 sm:grid-cols-3">
+          <label className="block">
+            <span className="field-label">Text next to the logo</span>
+            <input name="logoText" className="input" maxLength={20} value={values.logoText} onChange={set("logoText")} />
+            {err("logoText")}
+          </label>
+          <label className="block">
+            <span className="field-label">Top right label</span>
+            <input name="headerLabel" className="input" maxLength={12} placeholder="ROME" value={values.headerLabel} onChange={set("headerLabel")} />
+            {err("headerLabel")}
+          </label>
+          <label className="block">
+            <span className="field-label">Top right value</span>
+            <input name="headerValue" className="input" maxLength={20} placeholder="DevFest" value={values.headerValue} onChange={set("headerValue")} />
+            {err("headerValue")}
           </label>
         </div>
 

@@ -137,6 +137,11 @@ describe("business-card options", () => {
     expect(parsed).toMatchObject({ barcode: true, dayGlow: true, latestLabel: "NOW", contactUrl: "https://adrbn.dev/me.vcf" });
   });
 
+  it("keeps logo text and header field optional", () => {
+    expect(input()).toMatchObject({ logoText: "", headerLabel: "", headerValue: "" });
+    expect(() => input({ headerValue: "x".repeat(25) })).toThrow(/20 characters/);
+  });
+
   it("rejects long labels and non-http contact links", () => {
     expect(CardInputSchema.safeParse({ ...input(), latestLabel: "x".repeat(13) }).success).toBe(false);
     expect(CardInputSchema.safeParse({ ...input(), contactUrl: "javascript:alert(1)" }).success).toBe(false);

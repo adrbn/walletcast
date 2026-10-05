@@ -8,6 +8,9 @@ export interface PassPreviewProps {
   logoUrl?: string | null;
   iconUrl?: string | null;
   latestLabel?: string;
+  logoText?: string;
+  headerLabel?: string;
+  headerValue?: string;
   barcode?: boolean;
   /** Real QR image when the card exists; a blank square stands in before it is saved. */
   qrUrl?: string | null;
@@ -38,16 +41,27 @@ export function PassPreview(props: PassPreviewProps) {
     >
       <div className="flex h-10 items-center gap-3">
         {props.logoUrl ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={props.logoUrl} alt="" className="h-10 max-w-[60%] object-contain object-left" />
+          <>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={props.logoUrl} alt="" className="h-10 max-w-[60%] object-contain object-left" />
+            {props.logoText && <span className="truncate font-semibold">{props.logoText}</span>}
+          </>
         ) : (
           <>
             {props.iconUrl && (
               // eslint-disable-next-line @next/next/no-img-element
               <img src={props.iconUrl} alt="" className="h-8 w-8 rounded-md" />
             )}
-            <span className="truncate font-semibold">{props.organizationName || "Your business"}</span>
+            <span className="truncate font-semibold">{props.logoText || props.organizationName || "Your business"}</span>
           </>
+        )}
+        {props.headerValue && (
+          <div className="ml-auto text-right leading-tight">
+            <div className="text-[10px] font-semibold uppercase tracking-wide" style={{ color: props.labelColor }}>
+              {props.headerLabel}
+            </div>
+            <div className="text-sm">{props.headerValue}</div>
+          </div>
         )}
       </div>
       {props.glowHue != null ? (
